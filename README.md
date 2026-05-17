@@ -2,7 +2,15 @@
 
 An AI-powered study tool that extracts YouTube video transcripts and transforms them into summaries, study notes, PDFs, and provides intelligent Q&A using RAG (Retrieval Augmented Generation).
 
-Built with **Python · FastAPI · Streamlit · Gemini 1.5 Flash · ChromaDB**.
+Built with **Python · FastAPI · LangChain · Streamlit · Gemini 2.5 Flash · ChromaDB**.
+
+---
+
+## 🌐 Live Demo
+* **Frontend**: https://youtube-study-frontend.onrender.com
+* **API Docs**: https://youtube-study-backend.onrender.com/docs
+
+> 🚀 Try it now! Paste any YouTube URL and start learning smarter.
 
 ---
 
@@ -42,6 +50,7 @@ youtube-study-assistant/
 │
 ├── streamlit.py             # Streamlit frontend UI
 ├── requirements.txt         # Python dependencies
+├── render.yaml              # Render Deployment
 ├── .env.example
 ├── .gitignore
 └── README.md
@@ -81,12 +90,8 @@ cd youtube-study-assistant
 ```bash
 # Create the environment
 python -m venv venv
-
-# Activate on Windows
-venv\Scripts\activate
-
-# Activate on macOS/Linux
-source venv/bin/activate
+venv\Scripts\activate        # Activate on Windows
+source venv/bin/activate     # Activate on macOS/Linux
 ```
 
 ### 3. Install Dependencies
@@ -215,54 +220,16 @@ This design ensures:
 
 ---
 
-## 🔌 API Endpoints Reference
+## 🔌 API Endpoints  
 
-### Transcript Management
+### Core Flow
+
 ```bash
-# Extract transcript
-POST /api/transcript
-Body: { "youtube_url": "https://youtube.com/watch?v=..." }
-Returns: { "video_id": "...", "word_count": 1234 }
-
-# View cache
-GET /api/cache
-Returns: { "cached_videos": ["vid1", "vid2"], "count": 2 }
-
-# Clear cache
-DELETE /api/cache/{video_id}
-```
-
-### Content Generation
-```bash
-# Summarize
-POST /api/summarize
-Body: { "video_id": "abc123" }
-
-# Generate notes
-POST /api/notes
-Body: { "video_id": "abc123", "video_title": "My Video" }
-
-# Generate PDF
-POST /api/notes/pdf
-Body: { "video_id": "abc123", "video_title": "My Video" }
-
-# Download PDF
-GET /api/notes/download/{video_id}
-```
-
-### RAG System
-```bash
-# Store embeddings
-POST /api/embeddings/store
-Body: { "video_id": "abc123" }
-
-# Query embeddings
-POST /api/embeddings/query
-Body: { "video_id": "abc123", "query": "...", "n_results": 3 }
-
-# RAG chat
-POST /api/rag/chat
-Body: { "video_id": "abc123", "question": "...", "include_sources": true }
+POST /api/transcript        # Extract once (returns video_id)
+POST /api/summarize         # Get summary
+POST /api/notes/pdf         # Generate notes + PDF
+POST /api/embeddings/store  # Setup RAG
+POST /api/rag/chat          # Ask questions
 ```
 
 ---
@@ -336,175 +303,15 @@ curl -X POST http://localhost:8000/api/gemini/test \
 
 ---
 
-## 🚀 Deployment
-
-### Deploy to Render
-
-1. Create `render.yaml` in project root:
-
-```yaml
-services:
-  - type: web
-    name: youtube-study-backend
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
-    envVars:
-      - key: GEMINI_API_KEY
-        sync: false
-      - key: PYTHON_VERSION
-        value: 3.11.0
-    disk:
-      name: chroma-storage
-      mountPath: /opt/render/project/src
-      sizeGB: 1
-
-  - type: web
-    name: youtube-study-frontend
-    runtime: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: streamlit run streamlit.py --server.port $PORT --server.address 0.0.0.0
-    envVars:
-      - key: API_URL
-        fromService:
-          type: web
-          name: youtube-study-backend
-          property: url
-      - key: PYTHON_VERSION
-        value: 3.11.0
-```
-
-2. Update `streamlit.py` to use environment variable:
-
-```python
-import os
-API = os.getenv("API_URL", "http://localhost:8000")
-```
-
-3. Push to GitHub and connect to Render
-4. Set `GEMINI_API_KEY` in Render dashboard
-5. Deploy both services
-
----
-
-## 📦 Environment Variables
-
-Create a `.env` file with:
-
-```env
-# Required
-GEMINI_API_KEY=your_key_here
-
-# Optional
-APP_NAME=YouTube Study Assistant
-DEBUG=True
-```
-
-For production (Render), set these in the dashboard environment variables section.
-
----
-
-## 🐛 Troubleshooting
-
-### Backend won't start
-```bash
-# Check if port 8000 is already in use
-# On Windows:
-netstat -ano | findstr :8000
-
-# Use different port:
-uvicorn app.main:app --reload --port 8001
-```
-
-### Gemini API errors
-- **429 Quota Exceeded**: Create new Google Cloud project with fresh API key
-- **404 Model Not Found**: Verify model name is `gemini-1.5-flash`
-- **Timeout**: Check internet connection, increase timeout in config
-
-### ChromaDB issues
-```bash
-# Clear ChromaDB storage
-rm -rf ./chroma_db  # Linux/Mac
-rmdir /s chroma_db  # Windows
-```
-
-### Dependencies conflicts
-```bash
-# Fresh install
-pip uninstall -r requirements.txt -y
-pip install -r requirements.txt
-```
-
----
-
-## 📊 Performance Tips
-
-* **Cache Hit Rate**: Re-using video_id avoids redundant transcript fetches
-* **Embedding Storage**: Store embeddings once per video, reuse for multiple questions
-* **Chunk Size**: Default 500 chars with 50 overlap works well for most videos
-* **Model Selection**: `gemini-1.5-flash` balances speed and quality for this use case
-
----
-
-## 🔒 Security Notes
-
-* Never commit `.env` file to version control
-* API key has free tier limits — monitor usage at https://aistudio.google.com
-* ChromaDB storage is local — no data leaves your machine except Gemini API calls
-* Transcripts cached in-memory only — cleared on server restart
-
----
-
 ## 📜 License
 
 MIT License — feel free to use and modify.
 
 ---
 
-## 🤝 Contributing
+## 👩‍💻 Author
 
-Pull requests welcome! Please:
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new features
-4. Ensure all tests pass
-5. Submit pull request with clear description
-
----
-
-## 🙏 Acknowledgments
-
-* [youtube-transcript-api](https://github.com/jdepoix/youtube-transcript-api) for transcript extraction
-* [LangChain](https://github.com/langchain-ai/langchain) for RAG orchestration
-* [ChromaDB](https://github.com/chroma-core/chroma) for vector storage
-* [ReportLab](https://www.reportlab.com/) for PDF generation
-* Google Gemini for AI capabilities
-* [FastAPI](https://fastapi.tiangolo.com/) for backend framework
-* [Streamlit](https://streamlit.io/) for rapid UI development
-
----
-
-## 📞 Support
-
-For issues, questions, or suggestions:
-- Open an issue on GitHub
-- Check existing issues for solutions
-- Review troubleshooting section above
-
----
-
-## 🗺️ Roadmap
-
-Future enhancements planned:
-- [ ] Multi-language transcript support
-- [ ] Batch processing for playlists
-- [ ] Export to Notion/Obsidian
-- [ ] Audio timestamp navigation
-- [ ] Flashcard generation from notes
-- [ ] Quiz generation based on content
-- [ ] Summary comparison across multiple videos
-- [ ] Persistent database instead of in-memory cache
-
----
-
-**Built with ❤️ using AI-powered tools**
+* Anushka Mishra
+* Final Year Project — 2026
+ 
+ 
