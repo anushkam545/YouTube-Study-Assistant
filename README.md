@@ -8,7 +8,7 @@ Built with **Python · FastAPI · LangChain · Streamlit · Gemini 2.5 Flash · 
 
 ## 🌐 Live Demo
 * **Frontend**: https://youtube-study-frontend.onrender.com
-* **API Docs**: https://youtube-study-backend.onrender.com/docs
+* **API Docs**: https://youtube-study-assistant.onrender.com/
 
 > 🚀 Try it now! Paste any YouTube URL and start learning smarter.
 
@@ -68,11 +68,12 @@ youtube-study-assistant/
 | Streamlit | 1.32 | Frontend UI |
 | Gemini 2.5 Flash | Latest | AI summarization, notes, Q&A |
 | youtube-transcript-api | 1.2.4 | Extract video transcripts |
-| ChromaDB | 0.4.22 | Vector database for embeddings |
-| LangChain | 0.1.0 | RAG pipeline orchestration |
+| ChromaDB | 0.5.23 | Vector database for embeddings |
+| LangChain | 0.3.7 | RAG pipeline orchestration |
 | Sentence Transformers | 2.7.0 | Text embeddings (all-MiniLM-L6-v2) |
 | ReportLab | 4.1.0 | PDF generation |
-| Pydantic | 2.1 | Request/response validation |
+| Pydantic | 2.4 | Request/response validation |
+| huggingface-hub | >=0.23.0,<1.0.0 | Embeddings |
 
 ---
 
