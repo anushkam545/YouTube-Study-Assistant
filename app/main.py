@@ -243,8 +243,8 @@ def download_notes_pdf(video_id: str):
 
 @app.post("/api/embeddings/store")
 def store_embeddings(request: VideoRequest):
-    from app.services.embeddings import process_transcript
     """Chunk + embed + store transcript in ChromaDB. Requires video_id."""
+    from app.services.embeddings import process_transcript
     try:
         data = get_cached_transcript(request.video_id)
         result = process_transcript(
@@ -260,8 +260,8 @@ def store_embeddings(request: VideoRequest):
 
 @app.post("/api/embeddings/query")
 def query_embeddings(request: QueryRequest):
-    from app.services.embeddings import query_chromadb
     """Semantic search over stored chunks."""
+    from app.services.embeddings import query_chromadb
     try:
         results = query_chromadb(
             video_id=request.video_id,
@@ -284,11 +284,11 @@ def query_embeddings(request: QueryRequest):
 
 @app.post("/api/rag/chat")
 def rag_chat(request: RAGRequest):
-    from app.services.rag import chat_with_video
     """
     RAG answer using ChromaDB + Gemini.
     Run /api/embeddings/store first for the video.
     """
+    from app.services.rag import chat_with_video
     try:
         result = chat_with_video(
             video_id=request.video_id,
