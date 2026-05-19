@@ -4,12 +4,19 @@ Handles text chunking, embeddings, and ChromaDB storage
 """
 
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from sentence_transformers import SentenceTransformer
 import chromadb
 import uuid
 from typing import List, Dict
 
+_embedding_model = None
 
+def get_embedding_model():
+    global _embedding_model
+    if _embedding_model is None:
+        from sentence_transformers import SentenceTransformer
+        _embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
+    return _embedding_model
+    
 # Initialize models
 embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
@@ -47,7 +54,7 @@ def generate_embeddings(texts: List[str]) -> List[List[float]]:
     Returns:
         List of embedding vectors
     """
-    embeddings = embedding_model.encode(texts, show_progress_bar=False)
+    embeddings = get_embedding_model.encode(texts, show_progress_bar=False)
     return embeddings.tolist()
 
 
@@ -128,7 +135,7 @@ def query_chromadb(video_id: str, query_text: str, n_results: int = 3) -> Dict:
         raise ValueError(f"Collection not found for video {video_id}")
     
     # Generate query embedding
-    query_embedding = embedding_model.encode([query_text])[0].tolist()
+    query_embedding = get_embedding_model.encode([query_text])[0].tolist()
     
     # Query collection
     results = collection.query(
