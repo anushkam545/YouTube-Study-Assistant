@@ -6,14 +6,6 @@ Built with **Python · FastAPI · LangChain · Streamlit · Gemini 2.5 Flash · 
 
 ---
 
-## 🌐 Live Demo
-* **Frontend**: https://youtube-study-frontend.onrender.com
-* **API Docs**: https://youtube-study-assistant.onrender.com/
-
-> 🚀 Try it now! Paste any YouTube URL and start learning smarter.
-
----
-
 ## 🚀 Features
 
 * **One-Time Transcript Extraction** — Fetch transcript once, cache it, and reuse across all features using video_id.
@@ -50,7 +42,6 @@ youtube-study-assistant/
 │
 ├── streamlit.py             # Streamlit frontend UI
 ├── requirements.txt         # Python dependencies
-├── render.yaml              # Render Deployment
 ├── .env.example
 ├── .gitignore
 └── README.md
