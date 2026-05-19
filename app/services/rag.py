@@ -5,7 +5,6 @@ Q&A using ChromaDB + Gemini
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.vectorstores import Chroma
-from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from app.config import settings
@@ -13,7 +12,14 @@ import chromadb
 
 
 # Initialize embeddings
-embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')
+_embeddings = None
+
+def get_embeddings():
+    global _embeddings
+    if _embeddings is None:
+        from langchain_huggingface import HuggingFaceEmbeddings
+        _embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')
+    return _embeddings
 
 # ChromaDB client
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
@@ -36,7 +42,7 @@ def get_retriever(video_id: str, k: int = 5):
     vectorstore = Chroma(
         client=chroma_client,
         collection_name=collection_name,
-        embedding_function=embeddings
+        embedding_function=get_embeddings()
     )
     
     # Create retriever
