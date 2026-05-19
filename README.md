@@ -66,7 +66,7 @@ youtube-study-assistant/
 | FastAPI | 0.104 | REST API backend |
 | Uvicorn | 0.24 | ASGI server for FastAPI |
 | Streamlit | 1.32 | Frontend UI |
-| Gemini 1.5 Flash | Latest | AI summarization, notes, Q&A |
+| Gemini 2.5 Flash | Latest | AI summarization, notes, Q&A |
 | youtube-transcript-api | 1.2.4 | Extract video transcripts |
 | ChromaDB | 0.4.22 | Vector database for embeddings |
 | LangChain | 0.1.0 | RAG pipeline orchestration |
