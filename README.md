@@ -36,13 +36,13 @@ youtube-study-assistant/
 │   ├── main.py              # FastAPI routes (all API endpoints)
 │   ├── config.py            # Environment config with Pydantic
 │   ├── cache.py             # In-memory transcript storage
-│   ├── transcript.py        # YouTube transcript extraction
 │   │
 │   └── services/
+|       ├── transcript.py        # YouTube transcript extraction
 │       ├── gemini_service.py    # Gemini API integration
 │       ├── embeddings.py        # Text chunking + ChromaDB storage
 │       ├── pdf_service.py       # PDF generation with ReportLab
-│       └── rag.py               # RAG pipeline (retrieval + generation)
+│       └── rag.py               # RAG pipeline (retrieval + generation)       
 │
 ├── tests/
 │   ├── test_api.py          # API endpoint tests
