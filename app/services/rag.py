@@ -5,7 +5,7 @@ Q&A using ChromaDB + Gemini
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.vectorstores import Chroma
-from langchain_community.embeddings import SentenceTransformerEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
 from app.config import settings
@@ -13,7 +13,7 @@ import chromadb
 
 
 # Initialize embeddings
-embeddings = SentenceTransformerEmbeddings(model_name='all-MiniLM-L6-v2')
+embeddings = HuggingFaceEmbeddings(model_name='all-MiniLM-L6-v2')
 
 # ChromaDB client
 chroma_client = chromadb.PersistentClient(path="./chroma_db")
