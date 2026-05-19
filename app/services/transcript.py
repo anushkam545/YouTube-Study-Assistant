@@ -5,7 +5,6 @@ Compatible with youtube-transcript-api >= 1.0.0
 
 from youtube_transcript_api import YouTubeTranscriptApi
 import re
-import os
 
 
 def extract_video_id(url: str) -> str:
@@ -22,10 +21,7 @@ def extract_video_id(url: str) -> str:
 
 
 def get_transcript(video_id: str) -> str:
-    proxy_url = os.getenv("PROXY_URL")
-    proxies = {"https": proxy_url, "http": proxy_url} if proxy_url else None
-    
-    ytt = YouTubeTranscriptApi(proxies=proxies)
+    ytt = YouTubeTranscriptApi()
     
     # Attempt 1: English
     try:
